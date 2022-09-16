@@ -7,6 +7,11 @@
 using namespace std;
 using namespace sf;
 
+float lastXPoint;
+float lastYPoint;
+float* cordsX = new float[5];
+float* cordsY = new float[5];
+
 float getx(float xval[], float recentPoint, int count)
 {
 
@@ -25,7 +30,7 @@ float getx(float xval[], float recentPoint, int count)
 
 float gety(float yval[], float recentPoint, int count)
 {
-    
+
 
     int temp = count;
 
@@ -43,10 +48,17 @@ float gety(float yval[], float recentPoint, int count)
 
 int main()
 {
-    RenderWindow window(VideoMode(800, 600), "My window");
+    RenderWindow window(VideoMode(1920, 1080), "My window");
+
+
+    float x1, x2, x3, x4;
+    float y1, y2, y3, y4;
+
+
+    bool go = false;
 
     Vector2f clicked;
-
+    int count1 = 0;
 
     vector<VertexArray> vertexArrays;
 
@@ -54,141 +66,144 @@ int main()
 
     while (window.isOpen())
     {
+        window.display();
 
         Event event;
         while (window.pollEvent(event))
         {
-
             if (event.type == Event::Closed)
             {
                 window.close();
             }
+
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                if (event.mouseButton.button == Mouse::Left)
+                if (count1 < 4)
+                {
+                    if (event.mouseButton.button == Mouse::Left)
+                    {
+                        cout << " ";
+                        cout << event.mouseButton.x << endl;
+                        cout << event.mouseButton.y << endl;
 
-                    cout << " ";
-                cout << event.mouseButton.x << endl;
-                cout << event.mouseButton.y << endl;
+                        Vector2i mousePos = Mouse::getPosition(window);
+                        float temp1 = mousePos.x;
+                        float temp2 = mousePos.y;
+                        cordsX[count1] = temp1;
+                        cordsY[count1] = temp2;
 
-                clicked.x = event.mouseButton.x;
-                clicked.y = event.mouseButton.y;
+                        Vertex pointf(Vector2f(mousePos.x, mousePos.y), Color::Red);
+                        window.draw(&pointf, 1, Points);
+                        window.display();
+
+                        count1++;
+                    }
+
+                }
+                if (count1 == 4)
+                {
+                    go = true;
+                    x1 = cordsX[0];
+                    x2 = cordsX[1];
+                    x3 = cordsX[2];
+                    x4 = cordsX[3];
+
+                    y1 = cordsY[0];
+                    y2 = cordsY[1];
+                    y3 = cordsY[2];
+                    y4 = cordsY[3];
+
+                }
 
             }
 
         }
 
-
-        int x1, x2, x3, x4;
-        int y1, y2, y3, y4;
-
-        x1 = 100.0;
-        y1 = 300.0;
-
-        x2 = 600.0;
-        y2 = 300.0;
-
-        x3 = 350.0;
-        y3 = 100.0;
-
-        x4 = 350.0;
-        y4 = 250.0;
-
-        // Use to hold points if needed
-        float* cordsX = new float[100];
-        float* cordsY = new float[100];
-
-
-
-        cordsX[0] = x1;
-        cordsX[1] = x2;
-        cordsX[2] = x3;
-        cordsX[3] = x4;
-
-        cordsY[0] = y1;
-        cordsY[1] = y2;
-        cordsY[2] = y3;
-        cordsY[3] = y4;
-
-        // Array that holds the main verticies
-        float MainCordsX[3] = { x1, x2, x3 };
-        float MainCordsY[3] = { y1, y2, y3 };
-
-
-
-        bool stop = false;
-        int total = 0;
-
-        while (!stop)
+        while (go)
         {
-            int count = rand() % 3;
-            float lastXPoint = cordsX[3];
-            float lastYPoint = cordsY[3];
-            for (int index = 0; index < 5; index++)
+
+            // Array that holds the main verticies
+            float MainCordsX[3] = { x1, x2, x3 };
+            float MainCordsY[3] = { y1, y2, y3 };
+
+            float lastXPoint = x4;
+            float lastYPoint = y4;
+
+
+            bool stop = false;
+            int total = 0;
+
+            while (!stop)
             {
-                // Vertex array to hold points
-                VertexArray points(Points, 5);
+                int count = rand() % 3;
 
-                // Calls funtion to get new coordinates for vector
-                float XCord = getx(MainCordsX, lastXPoint, count);
-                float YCord = gety(MainCordsY, lastYPoint, count);
-
-                if (index %2 == 0)
+                for (int index = 0; index < 5; index++)
                 {
-                    points[index].position = Vector2f(XCord, YCord);
-                    points[index].color = Color::Green;
+                    // Vertex array to hold points
+                    VertexArray points(Points, 5);
+
+                    // Calls funtion to get new coordinates for vector
+                    float XCord = getx(MainCordsX, lastXPoint, count);
+                    float YCord = gety(MainCordsY, lastYPoint, count);
+
+                    if (XCord > x1 && XCord < ((x1 + x3) / 2) && (YCord > ((y1 + y2) / 2)))
+                    {
+                        points[index].position = Vector2f(XCord, YCord);
+                        points[index].color = Color::Green;
+                    }
+                    else if (XCord > x1 && XCord > ((x1 + x3) / 2) && (YCord > ((y1 + y2) / 2)))
+                    {
+                        points[index].position = Vector2f(XCord, YCord);
+                        points[index].color = Color::Blue;
+                    }
+                    else
+                    {
+                        points[index].position = Vector2f(XCord, YCord);
+                        points[index].color = Color::Magenta;
+                    }
+
+
+                    // Makes it so the last coordinate plotted is used in next get function
+                    lastXPoint = XCord;
+                    lastYPoint = YCord;
+
+                    count = rand() % 3;
+
+
+                    ///window.draw(points);
+                    vertexArrays.push_back(points);
+                    total++;
+
                 }
-                
-                else
-                {
-                    points[index].position = Vector2f(XCord, YCord);
-                    points[index].color = Color::Magenta;
-                }
-            
-
-                // Makes it so the last coordinate plotted is used in next get function
-                lastXPoint = XCord;
-                lastYPoint = YCord;
-
-                count = rand() % 3;
-
-
-                // Trying to add more variables to make random
-                //count++;
-
-
-                //cout << " " << lastXPoint;// << " " << cordsY[index + 3];
-                ///window.draw(points);
-                vertexArrays.push_back(points);
-                total++;
+                stop = true;
 
             }
-            stop = true;
-            delete[] cordsX;
-            delete[] cordsY;
+
+            // These are just to test verticies - remove when needed
+            window.clear(Color::Black);
+            Vertex point(Vector2f(x1, y1), Color::Magenta);
+            window.draw(&point, 1, Points);
+
+            Vertex point2(Vector2f(x2, y2), Color::Green);
+            window.draw(&point2, 1, Points);
+
+            Vertex point3(Vector2f(x3, y3), Color::Blue);
+            window.draw(&point3, 1, Points);
+
+
+
+
+            for (int i = 0; i < vertexArrays.size(); i++)
+            {
+                window.draw(vertexArrays.at(i));
+            }
+            window.display();
+
         }
-
-        // These are just to test verticies - remove when needed
-        window.clear();
-        Vertex point(Vector2f(x1, y1), Color::Blue);
-        window.draw(&point, 1, Points);
-
-        Vertex point2(Vector2f(x2, y2), Color::Yellow);
-        window.draw(&point2, 1, Points);
-
-        Vertex point3(Vector2f(x3, y3), Color::Magenta);
-        window.draw(&point3, 1, Points);
-
-
-
-        for (int i = 0; i < vertexArrays.size(); i++)
-        {
-            window.draw(vertexArrays.at(i));
-        }
-
-        window.display();
 
     }
-
+    delete[] cordsX;
+    delete[] cordsY;
     return 0;
+
 }
