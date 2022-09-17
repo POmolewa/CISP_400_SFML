@@ -9,8 +9,8 @@ using namespace sf;
 
 float lastXPoint;
 float lastYPoint;
-float* cordsX = new float[5];
-float* cordsY = new float[5];
+float* cordsX = new float[10];
+float* cordsY = new float[10];
 
 float getx(float xval[], float recentPoint, int count)
 {
@@ -78,7 +78,7 @@ int main()
 
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                if (count1 < 4)
+                if (count1 < 3)
                 {
                     if (event.mouseButton.button == Mouse::Left)
                     {
@@ -100,7 +100,7 @@ int main()
                     }
 
                 }
-                if (count1 == 4)
+                if (count1 == 3)
                 {
                     go = true;
                     x1 = cordsX[0];
@@ -112,6 +112,7 @@ int main()
                     y2 = cordsY[1];
                     y3 = cordsY[2];
                     y4 = cordsY[3];
+
 
                 }
 
@@ -126,8 +127,8 @@ int main()
             float MainCordsX[3] = { x1, x2, x3 };
             float MainCordsY[3] = { y1, y2, y3 };
 
-            float lastXPoint = x4;
-            float lastYPoint = y4;
+            float lastXPoint = x3;
+            float lastYPoint = y3;
 
 
             bool stop = false;
