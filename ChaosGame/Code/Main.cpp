@@ -64,7 +64,7 @@ int main()
     // Set the font to our message
     messageText.setFont(font);
     // Assign the actual message
-    messageText.setString("Please pick three points on the screen");
+    messageText.setString("Please pick three points on the screen and then one more point to start");
     // Make it really big
     messageText.setCharacterSize(30);
 
@@ -114,7 +114,7 @@ int main()
             {
                 paused = false;
 
-                if (count1 < 3)
+                if (count1 < 4)
                 {
                     if (event.mouseButton.button == Mouse::Left)
                     {
@@ -136,7 +136,7 @@ int main()
                     }
 
                 }
-                if (count1 == 3)
+                if (count1 == 4)
                 {
                     go = true;
                     x1 = cordsX[0];
