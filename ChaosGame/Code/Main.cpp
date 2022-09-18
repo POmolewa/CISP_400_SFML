@@ -1,11 +1,11 @@
+// Include important C++ libraries here
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <random>
-#include <time.h> 
-#include <vector>
+#include <cmath>
 
-using namespace std;
+// Make code easier to type with "using namespace"
 using namespace sf;
+using namespace std;
 
 float lastXPoint;
 float lastYPoint;
@@ -48,8 +48,36 @@ float gety(float yval[], float recentPoint, int count)
 
 int main()
 {
-    RenderWindow window(VideoMode(1920, 1080), "My window");
+    // Create a video mode object
+    VideoMode vm(1920, 1080);
 
+    // Create and open a window for the game
+    RenderWindow window(vm, "Sierpinski Triangle", Style::Default);
+
+    bool paused = true;
+
+    // Draw some text
+    Text messageText;
+    // We need to choose a font
+    Font font;
+    font.loadFromFile("fonts/KOMIKAP_.ttf");
+    // Set the font to our message
+    messageText.setFont(font);
+    // Assign the actual message
+    messageText.setString("Please pick three points on the screen");
+    // Make it really big
+    messageText.setCharacterSize(30);
+
+    //Choose a color
+    messageText.setFillColor(Color::White);
+
+    // Position the text
+    FloatRect textRect = messageText.getLocalBounds();
+    messageText.setOrigin(textRect.left +
+        textRect.width / 2.0f,
+        textRect.top +
+        textRect.height / 2.0f);
+    messageText.setPosition(1920 / 2.0f, 100.0f);
 
     float x1, x2, x3, x4;
     float y1, y2, y3, y4;
@@ -66,6 +94,11 @@ int main()
 
     while (window.isOpen())
     {
+        if (paused)
+        {
+            // Draw our message         
+            window.draw(messageText);
+        }
         window.display();
 
         Event event;
@@ -76,8 +109,11 @@ int main()
                 window.close();
             }
 
+
             if (event.type == sf::Event::MouseButtonPressed)
             {
+                paused = false;
+
                 if (count1 < 3)
                 {
                     if (event.mouseButton.button == Mouse::Left)
@@ -206,5 +242,4 @@ int main()
     delete[] cordsX;
     delete[] cordsY;
     return 0;
-
 }
